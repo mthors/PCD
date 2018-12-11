@@ -8,6 +8,7 @@ package tugas;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,6 +16,10 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.image.Kernel;
+import java.awt.image.ConvolveOp;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 
 /**
@@ -27,6 +32,9 @@ public class citra extends javax.swing.JFrame {
 
     private BufferedImage gambar;
     private BufferedImage anothergambar;
+    private BufferedImage gambarfilter;
+    private BufferedImage compress;
+    
     /**
      * Creates new form citra
      */
@@ -47,12 +55,15 @@ public class citra extends javax.swing.JFrame {
 
         pilihgambar = new javax.swing.JFileChooser();
         tombolpilihgambar = new javax.swing.JButton();
-        filelabel = new javax.swing.JLabel();
+        filelabel1 = new javax.swing.JLabel();
         filelabel2 = new javax.swing.JLabel();
         tombolgrayscale = new javax.swing.JButton();
         filtercombo = new javax.swing.JComboBox<>();
         labelfilter = new javax.swing.JLabel();
         tombolfilter = new javax.swing.JButton();
+        tombolcompress = new javax.swing.JButton();
+        compresscombo = new javax.swing.JComboBox<>();
+        labelcompress = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tugas Citra");
@@ -64,7 +75,7 @@ public class citra extends javax.swing.JFrame {
             }
         });
 
-        filelabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        filelabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         filelabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
@@ -94,20 +105,37 @@ public class citra extends javax.swing.JFrame {
             }
         });
 
+        tombolcompress.setText("Apply");
+        tombolcompress.setEnabled(false);
+        tombolcompress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tombolcompressActionPerformed(evt);
+            }
+        });
+
+        compresscombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Run Length Encoding", "Quantizing Compression" }));
+        compresscombo.setEnabled(false);
+
+        labelcompress.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelcompress.setText("Compression :");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(filelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(filelabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(tombolpilihgambar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tombolgrayscale, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(filtercombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labelfilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tombolfilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(tombolfilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tombolcompress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(compresscombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelcompress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(filelabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -127,8 +155,14 @@ public class citra extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addComponent(filtercombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(tombolfilter))
-                    .addComponent(filelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(tombolfilter)
+                        .addGap(18, 18, 18)
+                        .addComponent(labelcompress)
+                        .addGap(9, 9, 9)
+                        .addComponent(compresscombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(tombolcompress))
+                    .addComponent(filelabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -142,14 +176,14 @@ public class citra extends javax.swing.JFrame {
             try{
             File imgdisplay = pilihgambar.getSelectedFile();
             Image rescaled = ImageIO.read(imgdisplay);
-            filelabel.setIcon(new ImageIcon(rescaled.getScaledInstance(450, 450, 450)));
+            filelabel1.setIcon(new ImageIcon(rescaled.getScaledInstance(450, 450, 450)));
             
             }catch(IOException ioe){
-                filelabel.setText ("Gambar gagal di load !");
+                filelabel1.setText ("Gambar gagal di load !");
             }
         } 
         else{
-            filelabel.setText("Tak ada file dipilih !");
+            filelabel1.setText("Tak ada file dipilih !");
         }
         
     }//GEN-LAST:event_tombolpilihgambarActionPerformed
@@ -177,6 +211,7 @@ public class citra extends javax.swing.JFrame {
                 p = (a<<24) | (avg<<16) | (avg<<8) | avg;
                 gambar.setRGB(x, y, p);
                 anothergambar = gambar;
+                compress = anothergambar;
                 }
                 
             }
@@ -185,6 +220,8 @@ public class citra extends javax.swing.JFrame {
                 
             filtercombo.setEnabled(true);
             tombolfilter.setEnabled(true);
+            compresscombo.setEnabled(true);
+            tombolcompress.setEnabled(true);
             
             
             }catch(IOException ioe){
@@ -236,14 +273,81 @@ public class citra extends javax.swing.JFrame {
                 }
             }
         Image sukses = anothergambar;
-        filelabel.setIcon(new ImageIcon(sukses.getScaledInstance(450,450,450)));
+        compress = anothergambar;
+        filelabel1.setIcon(new ImageIcon(sukses.getScaledInstance(450,450,450)));
             
         }
         else if (filter == "Low Pass"){
+         float pembagi = 1.0f/9.0f;
+         float[] kernellowpass= {
+         pembagi,pembagi,pembagi,
+         pembagi,pembagi,pembagi,
+         pembagi,pembagi,pembagi,
+         };
         
+         BufferedImageOp lowpas = new ConvolveOp(new Kernel(3,3,kernellowpass), ConvolveOp.EDGE_NO_OP,null);
+         
+        Image sukses = lowpas.filter(anothergambar, gambarfilter);
+        compress = gambarfilter;
+        filelabel1.setIcon(new ImageIcon(sukses.getScaledInstance(450,450,450)));
+         
+        }
+        
+        else if (filter == "High Pass"){
+         float[] kernelhighpass= {
+         -1.0f,0.0f,-1.0f,
+         0.0f,5.0f,0.0f,
+         -1.0f,0.0f,-1.0f,
+         };
+        
+         BufferedImageOp lowpas = new ConvolveOp(new Kernel(3,3,kernelhighpass), ConvolveOp.EDGE_NO_OP,null);
+         
+        Image sukses = lowpas.filter(anothergambar, gambarfilter);
+        compress = gambarfilter;
+        filelabel1.setIcon(new ImageIcon(sukses.getScaledInstance(450,450,450)));
          
         }
     }//GEN-LAST:event_tombolfilterActionPerformed
+
+    private void tombolcompressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tombolcompressActionPerformed
+       String filter = (String)compresscombo.getSelectedItem();
+       
+       if (filter == "Run Length Encoding"){
+           try{
+           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+           ImageIO.write(anothergambar,"jpg",baos);
+           byte[] bytes = baos.toByteArray();  
+           System.out.println(bytes);
+           ByteArrayOutputStream dest = new ByteArrayOutputStream();
+           byte lastbyte = bytes[0];
+           int counter = 1;
+            for(int i=1;i<bytes.length;i++){
+                byte bytesekarang = bytes[i];
+                    if(lastbyte == bytesekarang){
+                        counter++;
+                    }
+                    else{
+                        dest.write((byte)counter);
+                        dest.write((byte)lastbyte);
+                        counter=1;
+                        lastbyte = bytesekarang;
+                    }
+                dest.write((byte)counter);
+                dest.write((byte)lastbyte);
+                }
+            byte[] akhir = dest.toByteArray();
+            
+            ByteArrayInputStream hasil = new ByteArrayInputStream(akhir);
+            BufferedImage bihasil = ImageIO.read(hasil);
+            File wadah = new File("RLE_Compressed.jpg");
+            ImageIO.write(bihasil,"jpg",wadah);
+            Image sukses =ImageIO.read(wadah); 
+            filelabel2.setIcon(new ImageIcon(sukses.getScaledInstance(450,450,450)));
+           
+           }catch(IOException ioe){};
+       };
+       
+    }//GEN-LAST:event_tombolcompressActionPerformed
 
     /**
      * @param args the command line arguments
@@ -281,11 +385,14 @@ public class citra extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel filelabel;
+    private javax.swing.JComboBox<String> compresscombo;
+    private javax.swing.JLabel filelabel1;
     private javax.swing.JLabel filelabel2;
     private javax.swing.JComboBox<String> filtercombo;
+    private javax.swing.JLabel labelcompress;
     private javax.swing.JLabel labelfilter;
     private javax.swing.JFileChooser pilihgambar;
+    private javax.swing.JButton tombolcompress;
     private javax.swing.JButton tombolfilter;
     private javax.swing.JButton tombolgrayscale;
     private javax.swing.JButton tombolpilihgambar;

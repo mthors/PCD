@@ -30,7 +30,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="filelabel" min="-2" pref="450" max="-2" attributes="0"/>
+              <Component id="filelabel1" min="-2" pref="450" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="tombolpilihgambar" max="32767" attributes="0"/>
@@ -38,6 +38,9 @@
                   <Component id="filtercombo" max="32767" attributes="0"/>
                   <Component id="labelfilter" max="32767" attributes="0"/>
                   <Component id="tombolfilter" alignment="0" max="32767" attributes="0"/>
+                  <Component id="tombolcompress" max="32767" attributes="0"/>
+                  <Component id="compresscombo" max="32767" attributes="0"/>
+                  <Component id="labelcompress" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="filelabel2" min="-2" pref="450" max="-2" attributes="0"/>
@@ -61,8 +64,14 @@
                       <Component id="filtercombo" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="tombolfilter" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="labelcompress" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                      <Component id="compresscombo" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="tombolcompress" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="filelabel" min="-2" pref="450" max="-2" attributes="0"/>
+                  <Component id="filelabel1" min="-2" pref="450" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -78,7 +87,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tombolpilihgambarActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="filelabel">
+    <Component class="javax.swing.JLabel" name="filelabel1">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
       </Properties>
@@ -128,6 +137,35 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tombolfilterActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="tombolcompress">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Apply"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tombolcompressActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="compresscombo">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="2">
+            <StringItem index="0" value="Run Length Encoding"/>
+            <StringItem index="1" value="Quantizing Compression"/>
+          </StringArray>
+        </Property>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelcompress">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="text" type="java.lang.String" value="Compression :"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
